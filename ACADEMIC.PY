@@ -490,6 +490,31 @@ async def chek(update: Update, context: ContextTypes.DEFAULT_TYPE):
         f"✅ Chek: *Yuborildi!*"
     )
     await update.message.reply_text(m(context, "rahmat"), parse_mode="Markdown")
+
+    # Make.com webhook
+    try:
+        import httpx
+        async with httpx.AsyncClient() as client:
+            await client.post(
+                "https://hook.eu1.make.com/oaxswgwoj74hfk69l32yhhm8495jrxn4",
+                json={
+                    "full_name": user.full_name,
+                    "telegram_id": str(user.id),
+                    "username": f"@{user.username or 'yoq'}",
+                    "til": t,
+                    "xizmat": data.get("xizmat", "-"),
+                    "hajm_narx": data.get("hajm_narx", "-"),
+                    "tema": data.get("tema", "-"),
+                    "muddat": data.get("muddat", "-"),
+                    "talablar": data.get("talablar", "-"),
+                    "kontakt": data.get("kontakt", "-"),
+                    "tolov": data.get("tolov", "-"),
+                },
+                timeout=10
+            )
+    except:
+        pass
+
     await context.bot.send_message(ADMIN_ID, admin_matn, parse_mode="Markdown")
     if update.message.photo:
         await context.bot.send_photo(ADMIN_ID, update.message.photo[-1].file_id, caption="📸 Chek rasmi")
