@@ -5,7 +5,8 @@ from telegram.ext import (
     filters, ContextTypes, ConversationHandler
 )
 
-BOT_TOKEN = "8852741001:AAFZxKwuXDpgk9YAf6Fc5sMdIeH2v6uCKg8"
+import os
+BOT_TOKEN = os.environ.get("BOT_TOKEN", "")
 ADMIN_ID = 5846813939
 
 logging.basicConfig(level=logging.INFO)
