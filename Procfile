@@ -1,1 +1,1 @@
-worker: python ACADEMIC.PY
+worker: python ACADEMIC.py
