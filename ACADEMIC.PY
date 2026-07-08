@@ -258,9 +258,70 @@ def m(ctx, key):
 def btn(rows):
     return InlineKeyboardMarkup([[InlineKeyboardButton(t, callback_data=t) for t in row] for row in rows])
 
+# === UNIVERSITETLAR RO'YXATI ===
+UNIVERSITETLAR = {
+    # BUXORO viloyati - Davlat
+    "BuxDU": "Buxoro Davlat Universiteti (BuxDU)",
+    "BDTI": "Buxoro Davlat Tibbiyot Instituti (BDTI)",
+    "BMTI": "Buxoro Muhandislik-Texnologiya Instituti (BMTI)",
+    "BDPI": "Buxoro Davlat Pedagogika Instituti (BDPI)",
+    # BUXORO viloyati - Xususiy
+    "BPXTI": "Buxoro Psixologiya va Xorijiy Tillar Instituti (BPXTI)",
+    "BITI": "Buxoro Innovatsion Tibbiyot Instituti (BITI)",
+    "TZU": "Turon Zarmed Universiteti (TZU)",
+    "OXU": "Osiyo Xalqaro Universiteti (OXU)",
+    "BIU": "Buxoro Innovatsiyalar Universiteti (BIU)",
+    "TYIU": "Turkiston Yangi Innovatsiyalar Universiteti (TYIU)",
+    # ANDIJON viloyati - Davlat
+    "AndDU": "Andijon Davlat Universiteti (AndDU)",
+    "ADTI": "Andijon Davlat Tibbiyot Instituti (ADTI)",
+    "ADPI": "Andijon Davlat Pedagogika Instituti (ADPI)",
+    "AMTI": "Andijon Mashinasozlik Instituti (AMTI)",
+    "AQXEI": "Andijon Qishloq Xo'jaligi va Ekologiya Instituti (AQXEI)",
+    # ANDIJON viloyati - Xususiy
+    "CHU": "Collegium Humanum Varshava Menejment Universiteti Andijon (CHU)",
+    "ShardaU": "Sharda University Andijon (ShardaU)",
+    "UEP": "University of Economic and Pedagogy Andijon (UEP)",
+    # TOSHKENT shahri - Davlat
+    "NUUz": "O'zbekiston Milliy Universiteti (NUUz)",
+    "TDTU": "Toshkent Davlat Tibbiyot Universiteti (TDTU)",
+    "TATU": "Toshkent Axborot Texnologiyalari Universiteti (TATU)",
+    "TDIU": "Toshkent Davlat Iqtisodiyot Universiteti (TDIU)",
+    "ToshDTU": "Islom Karimov nomidagi Toshkent Davlat Texnika Universiteti (ToshDTU)",
+    "TDPU": "Toshkent Davlat Pedagogika Universiteti (TDPU)",
+    "TDYuU": "Toshkent Davlat Yuridik Universiteti (TDYuU)",
+    "TTESI": "Toshkent To'qimachilik va Engil Sanoat Instituti (TTESI)",
+    "TQTI": "Toshkent Kimyo Texnologiya Instituti (TQTI)",
+    "TMI": "Toshkent Moliya Instituti (TMI)",
+    "TDSHI": "Toshkent Davlat Sharqshunoslik Instituti (TDSHI)",
+    "OzDSMI": "O'zbekiston Davlat San'at va Madaniyat Instituti (OzDSMI)",
+    "OzMU": "O'zbekiston Milliy Musiqa Universiteti (OzMU)",
+    "ToshDAU": "Toshkent Davlat Agrar Universiteti (ToshDAU)",
+    "OzDJTI": "O'zbekiston Davlat Jismoniy Tarbiya Instituti (OzDJTI)",
+    # TOSHKENT shahri - Xorijiy va Xususiy
+    "WIUT": "Westminster Xalqaro Universiteti (WIUT)",
+    "Inha": "Inha University Tashkent (Inha)",
+    "Turin": "Turin Politexnika Universiteti Toshkent (Turin)",
+    "MDU": "Lomonosov nomidagi Moskva Davlat Universiteti Toshkent filiali (MDU)",
+    "RIEU": "Rossiya Iqtisodiyot Universiteti Toshkent filiali (RIEU)",
+    "KXU": "Kimyo Xalqaro Universiteti (KXU)",
+    "SRIU": "Silk Road International University (SRIU)",
+}
+
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data.clear()
     user = update.effective_user
+
+    # Referral sistema — /start BuxDU yoki /start OXU
+    if context.args:
+        referal = context.args[0]
+        univer_nomi = UNIVERSITETLAR.get(referal, f"Noma'lum ({referal})")
+        context.user_data["referal"] = referal
+        context.user_data["universitet"] = univer_nomi
+    else:
+        context.user_data["referal"] = "Bevosita"
+        context.user_data["universitet"] = "Bevosita (link orqali emas)"
+
     keyboard = btn([["🇺🇿 O'zbek", "🇷🇺 Русский", "🇬🇧 English"]])
     matn = "👋 *Salom, {name}!*\n\n🎓 Biz — professional akademik yozuv xizmatlarini taqdim etamiz\n\n✅ Tez\n✅ Sifatli\n✅ Maxfiy\n\n🌐 *Tilni tanlang:*".format(name=user.first_name)
     if update.message:
@@ -487,6 +548,8 @@ async def chek(update: Update, context: ContextTypes.DEFAULT_TYPE):
         f"📋 Talablar: {data.get('talablar', '-')}\n"
         f"📞 Kontakt: {data.get('kontakt', '-')}\n"
         f"💳 To'lov: {data.get('tolov', '-')}\n"
+        f"🏛 Universitet: {data.get('universitet', '-')}\n"
+        f"🔗 Referal: {data.get('referal', 'Bevosita')}\n"
         f"✅ Chek: *Yuborildi!*"
     )
     await update.message.reply_text(m(context, "rahmat"), parse_mode="Markdown")
@@ -509,6 +572,8 @@ async def chek(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     "talablar": data.get("talablar", "-"),
                     "kontakt": data.get("kontakt", "-"),
                     "tolov": data.get("tolov", "-"),
+                    "referal": data.get("referal", "Bevosita"),
+                    "universitet": data.get("universitet", "Noma'lum"),
                 },
                 timeout=10
             )
