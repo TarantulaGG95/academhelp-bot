@@ -96,24 +96,24 @@ NARXLAR = {
         "120+ bet": "6 000 000 so'm+"
     },
     "vak_mahalliy": {
-        "Kichik hajm": "$100",
-        "O'rta hajm": "$200",
-        "Katta hajm": "$300"
+        "Small": "$100",
+        "Medium": "$200",
+        "Large": "$300"
     },
     "vak_xalqaro": {
-        "Kichik hajm": "$150",
-        "O'rta hajm": "$250",
-        "Katta hajm": "$300"
+        "Small": "$150",
+        "Medium": "$250",
+        "Large": "$300"
     },
     "scopus_q3q4": {
-        "Kichik hajm": "$300",
-        "O'rta hajm": "$500",
-        "Katta hajm": "$800"
+        "Small": "$300",
+        "Medium": "$500",
+        "Large": "$800"
     },
     "scopus_q1q2": {
-        "Kichik hajm": "$800",
-        "O'rta hajm": "$1 000",
-        "Katta hajm": "$1 200"
+        "Small": "$800",
+        "Medium": "$1 000",
+        "Large": "$1 200"
     },
     "adabiyotlar": {
         "20-40 manba": "500 000 so'm",
@@ -121,19 +121,19 @@ NARXLAR = {
         "60+ manba": "1 000 000 so'm"
     },
     "biostatistika": {
-        "Oddiy": "600 000 so'm",
-        "O'rta": "900 000 so'm",
-        "Murakkab": "1 200 000 so'm"
+        "Simple / Oddiy / Простой": "600 000 so'm",
+        "Medium / O'rta / Средний": "900 000 so'm",
+        "Complex / Murakkab / Сложный": "1 200 000 so'm"
     },
     "meta_analiz": {
-        "Oddiy": "2 000 000 so'm",
-        "O'rta": "3 000 000 so'm",
-        "Murakkab": "4 000 000 so'm"
+        "Simple / Oddiy / Простой": "2 000 000 so'm",
+        "Medium / O'rta / Средний": "3 000 000 so'm",
+        "Complex / Murakkab / Сложный": "4 000 000 so'm"
     },
     "data_analytics": {
-        "Oddiy": "1 500 000 so'm",
-        "O'rta": "2 500 000 so'm",
-        "Murakkab": "3 500 000 so'm"
+        "Simple / Oddiy / Простой": "1 500 000 so'm",
+        "Medium / O'rta / Средний": "2 500 000 so'm",
+        "Complex / Murakkab / Сложный": "3 500 000 so'm"
     },
 }
 
@@ -571,7 +571,6 @@ def m(ctx, key):
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data.clear()
-    user = update.effective_user
     if context.args:
         referal = context.args[0]
         univer_nomi = UNIVERSITETLAR.get(referal, f"Noma'lum ({referal})")
@@ -580,8 +579,9 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     else:
         context.user_data["referal"] = "Bevosita"
         context.user_data["universitet"] = "Bevosita"
+
     keyboard = btn([["🇺🇿 O'zbek", "🇷🇺 Русский", "🇬🇧 English"]])
-    matn = START_MATNI["uz"].format(menejer=MENEJER_TG, tel=MENEJER_TEL)
+    matn = "🌐 *Tilni tanlang / Выберите язык / Choose language:*"
     if update.message:
         await update.message.reply_text(matn, reply_markup=keyboard, parse_mode="Markdown")
     else:
@@ -611,6 +611,13 @@ async def xizmat_turi(update: Update, context: ContextTypes.DEFAULT_TYPE):
     t = til(context)
     ortga = ortga_btn(t)
     data = q.data
+
+    if ortga in data:
+        # Ortga — til tanlashga qaytish
+        keyboard = btn([["🇺🇿 O'zbek", "🇷🇺 Русский", "🇬🇧 English"]])
+        matn = "👋 *Salom! / Привет! / Hello!*\n\n🌐 *Tilni tanlang / Выберите язык / Choose language:*"
+        await q.message.edit_text(matn, reply_markup=keyboard, parse_mode="Markdown")
+        return TIL_TANLASH
 
     if "Entry" in data:
         context.user_data["xizmat_turi"] = "Entry"
@@ -657,7 +664,32 @@ async def xizmat_tanlash(update: Update, context: ContextTypes.DEFAULT_TYPE):
     ortga = ortga_btn(t)
 
     if ortga in data:
-        return await start(update, context)
+        # Ortga — 4 ta xizmat turi ga qaytish (Entry/Middle/Premium/VIP)
+        t2 = til(context)
+        tur = context.user_data.get("xizmat_turi", "Entry")
+        if tur == "Entry":
+            kartochkalar = ENTRY_KARTOCHKALAR[t2]
+            sarlavha = m(context, "entry_sarlavha")
+            next_state = ENTRY_XIZMAT
+        elif tur == "Middle":
+            kartochkalar = MIDDLE_KARTOCHKALAR[t2]
+            sarlavha = m(context, "middle_sarlavha")
+            next_state = MIDDLE_XIZMAT
+        elif tur == "Premium":
+            kartochkalar = PREMIUM_KARTOCHKALAR[t2]
+            sarlavha = m(context, "premium_sarlavha")
+            next_state = PREMIUM_XIZMAT
+        else:
+            kartochkalar = VIP_KARTOCHKALAR[t2]
+            sarlavha = m(context, "vip_sarlavha")
+            next_state = PREMIUM_XIZMAT
+        ortga2 = ortga_btn(t2)
+        await q.message.edit_text(sarlavha, parse_mode="Markdown")
+        for k in kartochkalar:
+            keyboard2 = InlineKeyboardMarkup([[InlineKeyboardButton(k["tugma"], callback_data=f"xizmat_{k['key']}")]])
+            await q.message.reply_text(k["matn"], reply_markup=keyboard2, parse_mode="Markdown")
+        await q.message.reply_text("─" * 20, reply_markup=btn([[ortga2]]))
+        return next_state
 
     if not data.startswith("xizmat_"):
         return ENTRY_XIZMAT
@@ -867,6 +899,7 @@ async def chek(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await update.message.reply_text(m(context, "rahmat"), parse_mode="Markdown")
 
+    # Make.com webhook — faqat ma'lumot yuboriladi, Telegram xabar yuborilmaydi
     try:
         import httpx
         async with httpx.AsyncClient() as client:
@@ -908,6 +941,23 @@ async def bekor(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(m(context, "bekor"), parse_mode="Markdown")
     return ConversationHandler.END
 
+async def reset(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    context.user_data.clear()
+    keyboard = btn([["🇺🇿 O'zbek", "🇷🇺 Русский", "🇬🇧 English"]])
+    await update.message.reply_text(
+        "🔄 Bot qayta ishga tushdi!\n\n🌐 Tilni tanlang / Выберите язык / Choose language:",
+        reply_markup=keyboard, parse_mode="Markdown"
+    )
+    return TIL_TANLASH
+
+async def noaniq_buyruq(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    keyboard = btn([["🇺🇿 O'zbek", "🇷🇺 Русский", "🇬🇧 English"]])
+    await update.message.reply_text(
+        "❓ Noto'g'ri buyruq.\n\n/start — boshlash uchun",
+        reply_markup=keyboard, parse_mode="Markdown"
+    )
+    return TIL_TANLASH
+
 async def noaniq(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(m(context, "tushunmadim"), parse_mode="Markdown")
 
@@ -929,7 +979,12 @@ def main():
             TOLOV_TURI: [CallbackQueryHandler(tolov_turi)],
             CHEK: [MessageHandler(filters.PHOTO | filters.Document.ALL, chek)],
         },
-        fallbacks=[CommandHandler("bekor", bekor)],
+        fallbacks=[
+            CommandHandler("bekor", bekor),
+            CommandHandler("start", start),
+            CommandHandler("reset", reset),
+            MessageHandler(filters.COMMAND, noaniq_buyruq),
+        ],
     )
     app.add_handler(conv)
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, noaniq))
