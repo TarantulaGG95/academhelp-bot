@@ -21,15 +21,19 @@ logger = logging.getLogger(__name__)
 
 # === UNIVERSITETLAR ===
 UNIVERSITETLAR = {
+    # ===== BUXORO VILOYATI =====
+    # Davlat OTMlari (4 ta rasmiy)
     "BuxDU": "Buxoro Davlat Universiteti (BuxDU)",
     "BDTI": "Buxoro Davlat Tibbiyot Instituti (BDTI)",
-    "BMTI": "Buxoro Muhandislik-Texnologiya Instituti (BMTI)",
+    "BDTU": "Buxoro Davlat Texnika Universiteti (BDTU)",
     "BDPI": "Buxoro Davlat Pedagogika Instituti (BDPI)",
-    "BPXTI": "Buxoro Psixologiya va Xorijiy Tillar Instituti (BPXTI)",
-    "BITI": "Buxoro Innovatsion Tibbiyot Instituti (BITI)",
-    "TZU": "Turon Zarmed Universiteti (TZU)",
+    # Nodavlat/Xususiy OTMlari
+    "BuxIU": "Buxoro Innovatsiyalar Universiteti (BuxIU)",
     "OXU": "Osiyo Xalqaro Universiteti (OXU)",
-    "BIU": "Buxoro Innovatsiyalar Universiteti (BIU)",
+    "TZU": "Turon Zarmed Universiteti (TZU)",
+    "BITI": "Buxoro Innovatsion Tibbiyot Instituti (BITI)",
+    "BPXTI": "Buxoro Psixologiya va Xorijiy Tillar Instituti (BPXTI)",
+    "NewUzBux": "New Uzbekistan University Buxoro filiali (NewUzBux)",
     "TYIU": "Turkiston Yangi Innovatsiyalar Universiteti (TYIU)",
     "AndDU": "Andijon Davlat Universiteti (AndDU)",
     "ADTI": "Andijon Davlat Tibbiyot Instituti (ADTI)",
@@ -54,6 +58,25 @@ UNIVERSITETLAR = {
     "OzMU": "O'zbekiston Milliy Musiqa Universiteti (OzMU)",
     "ToshDAU": "Toshkent Davlat Agrar Universiteti (ToshDAU)",
     "OzDJTI": "O'zbekiston Davlat Jismoniy Tarbiya Instituti (OzDJTI)",
+    # SAMARQAND viloyati - Davlat
+    "SamDU": "Samarqand Davlat Universiteti (SamDU)",
+    "SamDTU": "Samarqand Davlat Tibbiyot Universiteti (SamDTU)",
+    "SamDAQU": "Samarqand Davlat Arxitektura-Qurilish Universiteti (SamDAQU)",
+    "SamDPI": "Samarqand Davlat Pedagogika Instituti (SamDPI)",
+    "SamDCTI": "Samarqand Davlat Chet Tillar Instituti (SamDCTI)",
+    "SamDVMU": "Samarqand Davlat Veterinariya Meditsinasi Universiteti (SamDVMU)",
+    "SamISI": "Samarqand Iqtisodiyot va Servis Instituti (SamISI)",
+    "SamATI": "Samarqand Agroinnovatsiyalar va Tadqiqotlar Instituti (SamATI)",
+    "TDIU_Sam": "TDIU Samarqand filiali (TDIU_Sam)",
+    "TATU_Sam": "TATU Samarqand filiali (TATU_Sam)",
+    "SamDU_Urgut": "SamDU Urgut filiali (SamDU_Urgut)",
+    "KattaDPI": "Kattaqo'rg'on Davlat Pedagogika Instituti (KattaDPI)",
+    "SamDCTI_Narpay": "SamDCTI Narpay filiali (SamDCTI_Narpay)",
+    # SAMARQAND viloyati - Nodavlat/Xususiy
+    "SamInnU": "Samarqand Innovatsiya Universiteti (SamInnU)",
+    "SamXU": "Samarqand Xalqaro Universiteti (SamXU)",
+    "NewUzSam": "New Uzbekistan University Samarqand (NewUzSam)",
+    # TOSHKENT - Xorijiy va Xususiy
     "WIUT": "Westminster Xalqaro Universiteti (WIUT)",
     "Inha": "Inha University Tashkent (Inha)",
     "Turin": "Turin Politexnika Universiteti Toshkent (Turin)",
